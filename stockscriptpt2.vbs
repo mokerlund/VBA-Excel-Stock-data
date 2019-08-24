@@ -4,6 +4,8 @@ Sub stockscriptpt2()
     'Loop through each ws
     For Each ws In Worksheets
             
+        Dim openingvalue As Double
+        Dim yearlychange As Double
         'Number of rows in sheet
         NumOfRows = ws.Cells(Rows.Count, "A").End(xlUp).Row
         
@@ -33,11 +35,16 @@ Sub stockscriptpt2()
             'Determine if current cell ticker value is the same as the previous
             ElseIf ws.Cells(i, 1).Value <> ticker_name Then
 
-                Dim percentchange As Double
+        Dim percentchange As Double
 
                 closingvalue = ws.Cells(i - 1, 6).Value
                 yearlychange = closingvalue - openingvalue
-                percentchange = Round(openingvalue / yearlychange, 2)
+                
+                If yearlychange = 0 Then
+                    percentchange = 0
+                Else
+                    percentchange = Round(((yearlychange / openingvalue) * 100), 2)
+                    End If
 
                 ws.Range("I" & SummaryTableRow).Value = ticker_name
                 ws.Range("L" & SummaryTableRow).Value = tickervolumetotal
@@ -69,23 +76,19 @@ Sub stockscriptpt2()
         ws.Range("Q1").Value = "Value"
 
 
-        NumOfRows = ws.Cells(Rows.Count, "I").End(xlUp).Row
+        'NumOfRows = ws.Cells(Rows.Count, "I").End(xlUp).Row
         j = 2
         
         highestpercent = ws.Cells(j, 11).Value
         
-        highestpercent.NumberFormat = "00.0%"
-
         lowestpercent = ws.Cells(j, 11).Value
-        
-        lowestpercent.NumberFormat = "00.0%"
-        
+                
         highestvolume = ws.Cells(j, 12).Value
 
         Rows = ws.Cells(Rows.Count, "J").End(xlUp).Row
 
 
-        For j = 3 To Rows
+        For j = 3 To Rows:
             
             If ws.Cells(j, 11).Value > highestpercent Then
                 highestpercent = ws.Cells(j, 11).Value
